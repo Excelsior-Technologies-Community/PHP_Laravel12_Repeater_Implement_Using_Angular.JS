@@ -85,7 +85,6 @@ http://localhost:8000
 ---
 ## Screenshot
 <img width="1761" height="969" alt="image" src="https://github.com/user-attachments/assets/a9f39e40-4076-42d1-b926-c0e80180e6d2" />
----
 
 ---
 
@@ -327,22 +326,3 @@ php artisan route:cache
 Set correct file permissions and configure Apache/Nginx.
 
 ---
-
-## License
-
-This project is open-source and licensed under the MIT License.
-
----
-
-## Future Enhancements
-
-* Edit and delete products
-* Search and filter products
-* Image upload for variants
-* Export to CSV or Excel
-* Bulk operations
-* Undo and redo support
-
----
-
-Note: This project is intended for educational and demonstration purposes and can be extended based on project requirements.
