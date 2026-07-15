@@ -24,6 +24,33 @@
 
     <style>
         body {
+<<<<<<< HEAD
+=======
+            background: #f4f7fb;
+            font-family: Inter, sans-serif;
+        }
+
+        .card {
+            border-radius: 15px;
+        }
+
+        .card h2,
+        .card h3 {
+            font-weight: 700;
+            margin-bottom: 0;
+        }
+
+        .card h6 {
+            font-size: 14px;
+            opacity: .9;
+        }
+
+        .repeater-item {
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+>>>>>>> development
             background-color: #f8f9fa;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
         }
@@ -747,10 +774,10 @@
     <div class="container mt-4">
 
         <!-- ================= Dashboard Statistics ================= -->
-        <div class="row mb-4">
+        <div class="row g-3 mb-4">
 
-            <div class="col-md-3">
-                <div class="card bg-primary text-white shadow">
+            <div class="col">
+                <div class="card bg-primary text-white shadow h-100">
                     <div class="card-body text-center">
                         <h6>Total Products</h6>
                         <h2>@{{ vm.statistics.total_products }}</h2>
@@ -759,8 +786,9 @@
                 </div>
             </div>
 
-            <div class="col-md-3">
-                <div class="card bg-success text-white shadow">
+
+            <div class="col">
+                <div class="card bg-success text-white shadow h-100">
                     <div class="card-body text-center">
                         <h6>Total Variants</h6>
                         <h2>@{{ vm.statistics.total_variants }}</h2>
@@ -768,8 +796,9 @@
                 </div>
             </div>
 
-            <div class="col-md-3">
-                <div class="card bg-warning shadow">
+
+            <div class="col">
+                <div class="card bg-warning shadow h-100">
                     <div class="card-body text-center">
                         <h6>Total Stock</h6>
                         <h2>@{{ vm.statistics.total_stock }}</h2>
@@ -777,11 +806,22 @@
                 </div>
             </div>
 
-            <div class="col-md-3">
-                <div class="card bg-danger text-white shadow">
+
+            <div class="col">
+                <div class="card bg-danger text-white shadow h-100">
                     <div class="card-body text-center">
                         <h6>Inventory Value</h6>
-                        <h3>$@{{ vm.statistics.total_inventory_value }}</h3>
+                        <h3>₹@{{ vm.statistics.total_inventory_value }}</h3>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col">
+                <div class="card bg-dark text-white shadow h-100">
+                    <div class="card-body text-center">
+                        <h6>Low Stock</h6>
+                        <h2>@{{ vm.statistics.low_stock_variants }}</h2>
                     </div>
                 </div>
             </div>
@@ -846,7 +886,12 @@
                                         Product Name <span class="text-danger">*</span>
                                     </label>
 
-                                    <input type="text" class="form-control" ng-model="vm.product.name" required>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        ng-model="vm.product.name"
+                                        ng-change="vm.product.variants.forEach(vm.generateSKU)"
+                                        required>
 
                                 </div>
 
@@ -887,25 +932,53 @@
 
                                 <div class="row">
 
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
 
                                         <label class="form-label">
                                             Size
                                         </label>
 
-                                        <input type="text" class="form-control" ng-model="variant.size"
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            ng-model="variant.size"
+                                            ng-change="vm.generateSKU(variant)"
                                             placeholder="Size">
 
                                     </div>
 
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
 
                                         <label class="form-label">
                                             Color
                                         </label>
 
-                                        <input type="text" class="form-control" ng-model="variant.color"
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            ng-model="variant.color"
+                                            ng-change="vm.generateSKU(variant)"
                                             placeholder="Color">
+
+                                    </div>
+
+                                    <div class="col-md-2">
+
+                                        <label class="form-label">
+
+                                            SKU
+
+                                        </label>
+
+                                        <input
+
+                                            type="text"
+
+                                            class="form-control bg-light"
+
+                                            ng-model="variant.sku"
+
+                                            readonly>
 
                                     </div>
 
@@ -948,6 +1021,58 @@
                             </div>
 
                             <hr>
+
+                            <!-- Inventory Summary -->
+
+                            <div class="card border-primary mb-3">
+
+                                <div class="card-header bg-primary text-white">
+
+                                    <strong>Inventory Summary</strong>
+
+                                </div>
+
+                                <div class="card-body">
+
+                                    <div class="row text-center">
+
+                                        <div class="col-md-3">
+
+                                            <h5>@{{ vm.getTotalVariants() }}</h5>
+
+                                            <small>Total Variants</small>
+
+                                        </div>
+
+                                        <div class="col-md-3">
+
+                                            <h5>@{{ vm.getTotalStock() }}</h5>
+
+                                            <small>Total Stock</small>
+
+                                        </div>
+
+                                        <div class="col-md-3">
+
+                                            <h5>₹ @{{ vm.getInventoryValue() }}</h5>
+
+                                            <small>Inventory Value</small>
+
+                                        </div>
+
+                                        <div class="col-md-3">
+
+                                            <h5>@{{ vm.getAveragePrice() }}</h5>
+
+                                            <small>Average Price</small>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
 
                             <div class="text-end">
 
@@ -1100,7 +1225,13 @@
                                 <td>
 
                                     <span ng-repeat="variant in product.variants"
-                                        class="badge bg-info text-dark me-1 mb-1">
+                                        class="badge bg-primary me-1 mb-1">
+
+                                        <strong>SKU:</strong>
+
+                                        @{{ variant.sku || 'N/A' }}
+
+                                        <br>
 
                                         @{{ variant.size || '-' }}
 
@@ -1110,12 +1241,35 @@
 
                                         |
 
-                                        $@{{ variant.price }}
+                                        ₹@{{ variant.price }}
 
                                         |
 
-                                        Qty :
-                                        @{{ variant.stock_quantity }}
+                                        Qty : @{{ variant.stock_quantity }}
+
+                                        <span
+                                            class="badge bg-success"
+                                            ng-if="variant.stock_quantity>5">
+
+                                            In Stock
+
+                                        </span>
+
+                                        <span
+                                            class="badge bg-warning text-dark"
+                                            ng-if="variant.stock_quantity>0 && variant.stock_quantity<=5">
+
+                                            Low Stock
+
+                                        </span>
+
+                                        <span
+                                            class="badge bg-danger"
+                                            ng-if="variant.stock_quantity==0">
+
+                                            Out of Stock
+
+                                        </span>
 
                                     </span>
 
@@ -1618,10 +1772,9 @@
 =======
     <!-- End Container -->
     <script>
-
         angular.module('productApp', [])
 
-            .controller('ProductController', ['$http', function ($http) {
+            .controller('ProductController', ['$http', function($http) {
 
                 var vm = this;
 
@@ -1649,7 +1802,9 @@
 
                     total_stock: 0,
 
-                    total_inventory_value: 0
+                    total_inventory_value: 0,
+
+                    low_stock_variants: 0
 
                 };
 
@@ -1667,6 +1822,8 @@
                     variants: [
 
                         {
+
+                            sku: '',
 
                             size: '',
 
@@ -1699,9 +1856,11 @@
                 // Add Variant
                 // ==========================
 
-                vm.addVariant = function () {
+                vm.addVariant = function() {
 
-                    vm.product.variants.push({
+                    let variant = {
+
+                        sku: '',
 
                         size: '',
 
@@ -1711,18 +1870,20 @@
 
                         stock_quantity: null
 
-                    });
+                    };
+
+                    vm.generateSKU(variant);
+
+                    vm.product.variants.push(variant);
 
                 };
-
-
 
 
                 // ==========================
                 // Remove Variant
                 // ==========================
 
-                vm.removeVariant = function (index) {
+                vm.removeVariant = function(index) {
 
                     if (vm.product.variants.length > 1) {
 
@@ -1733,14 +1894,121 @@
                 };
 
 
+                // ==========================
+                // Generate SKU
+                // ==========================
 
+
+                vm.generateSKU = function(variant) {
+
+                    if (!vm.product.name) {
+
+                        variant.sku = '';
+
+                        return;
+
+                    }
+
+                    let product = vm.product.name.substring(0, 3).toUpperCase();
+
+                    let size = (variant.size || 'NA').substring(0, 2).toUpperCase();
+
+                    let color = (variant.color || 'NA').substring(0, 2).toUpperCase();
+
+                    variant.sku = product + '-' + size + '-' + color;
+
+                };
+
+                vm.getTotalVariants = function() {
+
+                    return vm.product.variants.length;
+
+                };
+
+                vm.getTotalStock = function() {
+
+                    let total = 0;
+
+                    angular.forEach(vm.product.variants, function(variant) {
+
+                        total += Number(variant.stock_quantity || 0);
+
+                    });
+
+                    return total;
+
+                };
+
+                vm.getInventoryValue = function() {
+
+                    let total = 0;
+
+                    angular.forEach(vm.product.variants, function(variant) {
+
+                        total += Number(variant.price || 0) * Number(variant.stock_quantity || 0);
+
+                    });
+
+                    return total.toFixed(2);
+
+                };
+
+                vm.getAveragePrice = function() {
+
+                    if (vm.product.variants.length === 0) {
+
+                        return 0;
+
+                    }
+
+                    let total = 0;
+
+                    angular.forEach(vm.product.variants, function(variant) {
+
+                        total += Number(variant.price || 0);
+
+                    });
+
+                    return (total / vm.product.variants.length).toFixed(2);
+
+                };
 
 
                 // ==========================
                 // Save Product
                 // ==========================
 
-                vm.submitForm = function () {
+                vm.submitForm = function() {
+
+                    let combinations = [];
+
+                    for (let i = 0; i < vm.product.variants.length; i++) {
+
+                        let key = (
+                            (vm.product.variants[i].size || '').trim() +
+                            '-' +
+                            (vm.product.variants[i].color || '').trim()
+                        ).toLowerCase();
+
+                        if (combinations.includes(key)) {
+
+                            Swal.fire({
+
+                                icon: 'warning',
+
+                                title: 'Duplicate Variant',
+
+                                text: 'Same Size & Color already exists.'
+
+                            });
+
+                            return;
+
+                        }
+
+                        combinations.push(key);
+
+                    }
 
 
                     vm.loading = true;
@@ -1760,11 +2028,9 @@
 
                     }
 
-
-
                     $http[method](url, vm.product)
 
-                        .then(function (response) {
+                        .then(function(response) {
 
 
                             Swal.fire({
@@ -1792,7 +2058,7 @@
 
                         })
 
-                        .catch(function (error) {
+                        .catch(function(error) {
 
 
                             Swal.fire({
@@ -1808,7 +2074,7 @@
 
                         })
 
-                        .finally(function () {
+                        .finally(function() {
 
                             vm.loading = false;
 
@@ -1818,15 +2084,11 @@
                 };
 
 
-
-
-
-
                 // ==========================
                 // Reset Form
                 // ==========================
 
-                vm.resetForm = function () {
+                vm.resetForm = function() {
 
 
                     vm.product = {
@@ -1840,6 +2102,8 @@
                         variants: [
 
                             {
+
+                                sku: '',
 
                                 size: '',
 
@@ -1859,15 +2123,11 @@
                 };
 
 
-
-
-
-
                 // ==========================
                 // Load Products
                 // ==========================
 
-                vm.loadProducts = function (url) {
+                vm.loadProducts = function(url) {
 
 
                     url = url || '/products';
@@ -1876,17 +2136,17 @@
 
                     $http.get(url, {
 
-                        params: {
+                            params: {
 
-                            search: vm.searchText,
+                                search: vm.searchText,
 
-                            per_page: vm.itemsPerPage
+                                per_page: vm.itemsPerPage
 
-                        }
+                            }
 
-                    })
+                        })
 
-                        .then(function (response) {
+                        .then(function(response) {
 
 
                             vm.products = response.data;
@@ -1898,16 +2158,11 @@
                 };
 
 
-
-
-
-
-
                 // ==========================
                 // Pagination
                 // ==========================
 
-                vm.changePage = function (url) {
+                vm.changePage = function(url) {
 
                     if (url) {
 
@@ -1918,22 +2173,16 @@
                 };
 
 
-
-
-
-
-
-
                 // ==========================
                 // Dashboard Statistics
                 // ==========================
 
-                vm.loadStatistics = function () {
+                vm.loadStatistics = function() {
 
 
                     $http.get('/statistics')
 
-                        .then(function (response) {
+                        .then(function(response) {
 
 
                             vm.statistics = response.data;
@@ -1945,22 +2194,18 @@
                 };
 
 
-
-
-
-
-
-
                 // ==========================
                 // Edit Product
                 // ==========================
 
-                vm.editProduct = function (product) {
-
+                vm.editProduct = function(product) {
 
                     vm.product = angular.copy(product);
 
-
+                    // Regenerate SKU for all variants
+                    angular.forEach(vm.product.variants, function(variant) {
+                        vm.generateSKU(variant);
+                    });
 
                     window.scrollTo({
 
@@ -1970,38 +2215,32 @@
 
                     });
 
-
                 };
-
-
-
-
-
 
 
                 // ==========================
                 // Delete Product SweetAlert
                 // ==========================
 
-                vm.deleteProduct = function (product) {
+                vm.deleteProduct = function(product) {
 
 
                     Swal.fire({
 
-                        title: 'Delete Product?',
+                            title: 'Delete Product?',
 
-                        text: product.name + ' will be deleted',
+                            text: product.name + ' will be deleted',
 
-                        icon: 'warning',
+                            icon: 'warning',
 
-                        showCancelButton: true,
+                            showCancelButton: true,
 
-                        confirmButtonText: 'Yes Delete'
+                            confirmButtonText: 'Yes Delete'
 
 
-                    })
+                        })
 
-                        .then(function (result) {
+                        .then(function(result) {
 
 
                             if (result.isConfirmed) {
@@ -2010,7 +2249,7 @@
 
                                 $http.delete('/products/' + product.id)
 
-                                    .then(function (response) {
+                                    .then(function(response) {
 
 
                                         Swal.fire({
@@ -2047,11 +2286,6 @@
                 };
 
 
-
-
-
-
-
                 // ==========================
                 // Initial Load
                 // ==========================
@@ -2065,10 +2299,9 @@
             }])
 
 
+            .filter('date', function() {
 
-            .filter('date', function () {
-
-                return function (value) {
+                return function(value) {
 
                     if (!value) {
 
@@ -2084,7 +2317,6 @@
 
 
             });
-
     </script>
 
 </body>
