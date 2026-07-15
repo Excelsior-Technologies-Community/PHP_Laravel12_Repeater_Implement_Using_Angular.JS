@@ -41,11 +41,20 @@ class ProductController extends Controller
                 });
             });
 
+        $lowStockVariants = Product::with('variants')
+            ->get()
+            ->sum(function ($product) {
+                return $product->variants
+                    ->where('stock_quantity', '<=', 5)
+                    ->count();
+            });
+
         return response()->json([
             'total_products' => $totalProducts,
             'total_variants' => $totalVariants,
             'total_stock' => $totalStock,
             'total_inventory_value' => $totalValue,
+            'low_stock_variants' => $lowStockVariants,
         ]);
     }
 
@@ -71,6 +80,34 @@ class ProductController extends Controller
         ]);
 
         foreach ($validated['variants'] as $variant) {
+
+            $duplicate = collect($validated['variants'])->filter(function ($item) use ($variant) {
+
+                return strtolower($item['size'] ?? '') ==
+                    strtolower($variant['size'] ?? '')
+                    &&
+                    strtolower($item['color'] ?? '') ==
+                    strtolower($variant['color'] ?? '');
+            });
+
+            if ($duplicate->count() > 1) {
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Duplicate Size & Color variant found.'
+                ], 422);
+            }
+
+            $variant['sku'] =
+                'SKU-' .
+                strtoupper(substr($validated['name'], 0, 3))
+                . '-' .
+                strtoupper(substr($variant['size'] ?: 'NA', 0, 2))
+                . '-' .
+                strtoupper(substr($variant['color'] ?: 'NA', 0, 2))
+                . '-' .
+                strtoupper(substr(uniqid(), -4));
+
             $product->variants()->create($variant);
         }
 
@@ -99,12 +136,10 @@ class ProductController extends Controller
                     ->orWhereHas('variants', function ($variant) use ($search) {
 
                         $variant->where('size', 'like', "%{$search}%")
-                            ->orWhere('color', 'like', "%{$search}%");
-
+                            ->orWhere('color', 'like', "%{$search}%")
+                            ->orWhere('sku', 'like', "%{$search}%");
                     });
-
             });
-
         }
 
         $products = $query
@@ -156,8 +191,34 @@ class ProductController extends Controller
         // Insert new variants
         foreach ($validated['variants'] as $variant) {
 
-            $product->variants()->create($variant);
+            $duplicate = collect($validated['variants'])->filter(function ($item) use ($variant) {
 
+                return strtolower($item['size'] ?? '') ==
+                    strtolower($variant['size'] ?? '')
+                    &&
+                    strtolower($item['color'] ?? '') ==
+                    strtolower($variant['color'] ?? '');
+            });
+
+            if ($duplicate->count() > 1) {
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Duplicate Size & Color variant found.'
+                ], 422);
+            }
+
+            $variant['sku'] =
+                'SKU-' .
+                strtoupper(substr($validated['name'], 0, 3))
+                . '-' .
+                strtoupper(substr($variant['size'] ?: 'NA', 0, 2))
+                . '-' .
+                strtoupper(substr($variant['color'] ?: 'NA', 0, 2))
+                . '-' .
+                strtoupper(substr(uniqid(), -4));
+
+            $product->variants()->create($variant);
         }
 
         return response()->json([
